@@ -45,7 +45,7 @@ MODEL_ID = "deepseek-v3-241226"
 client = OpenAI(
     api_key=os.environ.get("ARK_API_KEY"),
     base_url="https://ark.cn-beijing.volces.com/api/v3",
-    http_client=http_client
+    http_client=None
 )
 
 @app.route('/')
