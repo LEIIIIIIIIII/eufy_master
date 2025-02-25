@@ -3,4 +3,3 @@ flask-cors
 openai
 werkzeug
 gunicorn
-httpx
