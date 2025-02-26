@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, url_for
 import json
 import os
 from openai import OpenAI
@@ -22,7 +22,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 CORS(app)
 
 # eufy产品信息库
@@ -243,52 +243,72 @@ def generate_solution():
             for product in products:
                 product_info += f"- {product['name']}: {product['description']} ({product['price']})\n"
 
-        # 构建提示词
-        prompt = f"""作为一个eufy智能家居解决方案专家，请根据以下信息设计方案，主要推荐eufy的产品：
+        # 构建提示词 - 最安全方案
+        safety_prompt = f"""作为一个eufy智能家居解决方案专家，请根据以下信息设计【最安全】的方案，优先选择高端安防产品：
 
 地理位置：{location}
 户型信息：{floor_plan}
 客户需求：{requirements}
 
-检测到的地区特征: {region_info['region']}
-文化元素: {', '.join(region_info['characteristics']['cultural_elements'])}
-设计重点: {', '.join(region_info['characteristics']['design_focus'])}
+请以表格形式输出以下内容：
+1. 【安防方案】：请列出每个区域需要安装的eufy安防设备，包括型号、数量、安装位置和目的
+2. 【照明方案】：请列出每个区域需要安装的eufy照明设备，包括型号、数量和安装位置
+3. 【控制方案】：请列出需要的控制系统、联动场景设置和使用方式
+4. 【预算估算】：按类别列出产品和价格，并给出总价
 
-{region_info['characteristics']['prompt_template']}
+区域特点考虑：{region_info['characteristics']['prompt_template']}
 
-{'参考图片已上传，请结合图片内容。' if image_paths else ''}
-
-请从以下几个方面提供完整的eufy产品解决方案：
-1. 安防设备布置：包括摄像头、门铃、传感器等的具体安装位置和型号建议
-2. 照明方案设计：包括不同区域的照明需求和相应的智能照明产品推荐
-3. 系统集成建议：如何让安防和照明系统协同工作
-4. 预算估算：大致的投资预算范围
-5. 特色建议：根据地理位置和文化特点提供定制化建议
-
-请主要推荐以下eufy产品：
-{product_info}
+请确保方案是【最安全】的选择，不惜成本确保全方位的安防覆盖。
+请以Markdown表格格式输出结果，每个部分使用单独的表格，确保整齐美观。
 """
 
-        logging.info("Sending request to API")
+        # 构建提示词 - 性价比方案
+        value_prompt = f"""作为一个eufy智能家居解决方案专家，请根据以下信息设计【性价比最高】的方案，平衡安全需求与成本：
+
+地理位置：{location}
+户型信息：{floor_plan}
+客户需求：{requirements}
+
+请以表格形式输出以下内容：
+1. 【安防方案】：请列出每个区域需要安装的eufy安防设备，包括型号、数量、安装位置和目的
+2. 【照明方案】：请列出每个区域需要安装的eufy照明设备，包括型号、数量和安装位置
+3. 【控制方案】：请列出需要的控制系统、联动场景设置和使用方式
+4. 【预算估算】：按类别列出产品和价格，并给出总价
+
+区域特点考虑：{region_info['characteristics']['prompt_template']}
+
+请确保方案在【性价比】上最优，选择必要且高效的产品组合，避免过度配置。
+请以Markdown表格格式输出结果，每个部分使用单独的表格，确保整齐美观。
+"""
+
+        logging.info("Sending safety plan request to API")
         
-        # 调用API
-        response = client.chat.completions.create(
+        # 调用API - 安全方案
+        safety_response = client.chat.completions.create(
             model=MODEL_ID,
-            messages=[{
-                "role": "user",
-                "content": prompt
-            }],
+            messages=[{"role": "user", "content": safety_prompt}],
             temperature=0.7,
             max_tokens=2000
         )
 
-        result = response.choices[0].message.content
-        logging.info("Received API response")
+        # 调用API - 性价比方案
+        value_response = client.chat.completions.create(
+            model=MODEL_ID,
+            messages=[{"role": "user", "content": value_prompt}],
+            temperature=0.7,
+            max_tokens=2000
+        )
+
+        safety_plan = safety_response.choices[0].message.content
+        value_plan = value_response.choices[0].message.content
+        
+        logging.info("Received API responses for both plans")
 
         return jsonify({
             "success": True,
             "solution": {
-                "recommendation": result,
+                "safety_plan": safety_plan,
+                "value_plan": value_plan,
                 "region_info": {
                     "region": region_info["region"],
                     "cultural_elements": region_info["characteristics"]["cultural_elements"],
