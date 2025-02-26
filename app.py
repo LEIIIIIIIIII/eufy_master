@@ -6,6 +6,7 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import datetime
 import logging
+import httpx
 from typing import Dict, Optional
 
 # 创建必要的文件夹
@@ -141,6 +142,9 @@ class RegionDetector:
             }
         }
 
+# 实例化地区检测器
+region_detector = RegionDetector()
+
 # 文件上传配置
 class UploadConfig:
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -157,18 +161,15 @@ app.config['MAX_CONTENT_LENGTH'] = UploadConfig.MAX_CONTENT_LENGTH
 
 # API配置
 os.environ["ARK_API_KEY"] = "b5d630b2-e00c-4eeb-b71c-bd92384578bc"
-MODEL_ID = "deepseek-v3-241226"
+MODEL_ID = "bot-20250223165821-2cmrc"
 
-import httpx
+# 初始化OpenAI客户端
 http_client = httpx.Client()
 client = OpenAI(
     api_key=os.environ.get("ARK_API_KEY"),
     base_url="https://ark.cn-beijing.volces.com/api/v3",
     http_client=http_client
 )
-
-# 初始化地区检测器
-region_detector = RegionDetector()
 
 @app.route('/')
 def home():
@@ -177,6 +178,7 @@ def home():
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
     try:
+        # 检查是否有文件
         if 'file' not in request.files:
             return jsonify({'success': False, 'error': '没有文件'})
         
@@ -244,7 +246,7 @@ def generate_solution():
                 product_info += f"- {product['name']}: {product['description']} ({product['price']})\n"
 
         # 构建提示词
-        prompt = f"""作为一个eufy智能家居解决方案专家，请根据以下信息设计方案，主要推荐eufy的产品：
+        prompt = f"""作为一个eufy智能家居解决方案专家，你需要严格按照以下格式提供两套不同的方案，只使用eufy的产品：
 
 地理位置：{location}
 户型信息：{floor_plan}
@@ -258,14 +260,67 @@ def generate_solution():
 
 {'参考图片已上传，请结合图片内容。' if image_paths else ''}
 
-请从以下几个方面提供完整的eufy产品解决方案：
-1. 安防设备布置：包括摄像头、门铃、传感器等的具体安装位置和型号建议
-2. 照明方案设计：包括不同区域的照明需求和相应的智能照明产品推荐
-3. 系统集成建议：如何让安防和照明系统协同工作
-4. 预算估算：大致的投资预算范围
-5. 特色建议：根据地理位置和文化特点提供定制化建议
+你必须提供以下两套方案，并严格使用Markdown表格格式：
 
-请主要推荐以下eufy产品：
+# 方案一：安全至上方案
+
+## 安防设备
+
+| 产品名称 | 数量 | 安装位置 | 单价 | 小计 |
+|---------|-----|---------|------|------|
+| eufyCam 3 | 2 | 前门、后院 | ¥1,999 | ¥3,998 |
+| ... | ... | ... | ... | ... |
+
+## 照明产品
+
+| 产品名称 | 数量 | 安装位置 | 单价 | 小计 |
+|---------|-----|---------|------|------|
+| Smart Light Strip | 3 | 客厅、主卧、厨房 | ¥299 | ¥897 |
+| ... | ... | ... | ... | ... |
+
+## 其他智能设备
+
+| 产品名称 | 数量 | 安装位置 | 单价 | 小计 |
+|---------|-----|---------|------|------|
+| HomeBase 3 | 1 | 客厅 | ¥1,499 | ¥1,499 |
+| ... | ... | ... | ... | ... |
+
+## 方案一总预算：¥XX,XXX
+
+## 方案一特色建议
+...
+
+# 方案二：性价比方案
+
+## 安防设备
+
+| 产品名称 | 数量 | 安装位置 | 单价 | 小计 |
+|---------|-----|---------|------|------|
+| SoloCam E40 | 2 | 前门、后院 | ¥799 | ¥1,598 |
+| ... | ... | ... | ... | ... |
+
+## 照明产品
+
+| 产品名称 | 数量 | 安装位置 | 单价 | 小计 |
+|---------|-----|---------|------|------|
+| Smart Bulb | 4 | 客厅、主卧、次卧、厨房 | ¥129 | ¥516 |
+| ... | ... | ... | ... | ... |
+
+## 其他智能设备
+
+| 产品名称 | 数量 | 安装位置 | 单价 | 小计 |
+|---------|-----|---------|------|------|
+| ... | ... | ... | ... | ... |
+
+## 方案二总预算：¥XX,XXX
+
+## 方案二特色建议
+...
+
+## 系统集成建议
+...
+
+以上Markdown表格格式必须严格遵守，请确保所有产品都来自以下eufy产品列表：
 {product_info}
 """
 
@@ -279,7 +334,7 @@ def generate_solution():
                 "content": prompt
             }],
             temperature=0.7,
-            max_tokens=2000
+            max_tokens=2500
         )
 
         result = response.choices[0].message.content
