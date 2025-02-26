@@ -1,416 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Eufy Master - Smart Security & Lighting Solution</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>Eufy Master - Smart Solution</title>
     <style>
-        :root {
-            --eufy-green: #00C662;
-            --eufy-dark: #333333;
-            --eufy-gray: #666666;
-            --eufy-light-gray: #F5F5F5;
-        }
-
         body {
-            font-family: 'Roboto', Arial, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #FFFFFF;
-            color: var(--eufy-dark);
+            background-color: #f4f4f9;
         }
-
-        .header {
-            background-color: white;
-            padding: 20px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
-
-        .logo {
-            height: 40px;
-        }
-
-        .language-selector {
-            position: relative;
-            margin-left: 20px;
-        }
-
-        .language-selector select {
-            padding: 8px 30px 8px 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: white;
-            font-size: 14px;
-            appearance: none;
-            cursor: pointer;
-        }
-
         .container {
-            max-width: 1200px;
-            margin: 100px auto 40px;
+            max-width: 800px;
+            margin: 50px auto;
             padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
-        .form-section {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 30px;
-            margin-bottom: 30px;
+        h1 {
+            text-align: center;
+            color: #333;
         }
-
-        .section-title {
-            font-size: 24px;
-            font-weight: 500;
-            margin-bottom: 20px;
-            color: var(--eufy-dark);
-        }
-
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
-
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--eufy-dark);
+            margin-bottom: 5px;
+            color: #555;
         }
-
-        textarea {
+        input[type="text"], textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            resize: vertical;
-            min-height: 100px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: var(--eufy-green);
-            box-shadow: 0 0 0 2px rgba(0,198,98,0.1);
-        }
-
-        .file-upload {
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .file-upload:hover {
-            border-color: var(--eufy-green);
-            background-color: rgba(0,198,98,0.05);
-        }
-
-        .file-upload input[type="file"] {
-            display: none;
-        }
-
-        .preview-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .preview-image {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .generate-btn {
-            background-color: var(--eufy-green);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            width: 100%;
-            max-width: 300px;
-            margin: 20px auto;
-            display: block;
-        }
-
-        .generate-btn:hover {
-            background-color: #00B058;
-        }
-
-        .generate-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            display: none;
-        }
-
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--eufy-green);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .result-section {
-            display: none;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 30px;
-            margin-top: 30px;
-        }
-
-        .result-content {
-            line-height: 1.6;
-            font-size: 15px;
-        }
-
-        .error-message {
-            color: #ff4444;
-            background-color: #ffe6e6;
             padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
-            display: none;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
-            .form-section {
-                padding: 20px;
-            }
-
-            .section-title {
-                font-size: 20px;
-            }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #00C662;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #00a653;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .result img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f9;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <img src="https://us.eufy.com/cdn/shop/files/eufy_logo.png" alt="Eufy Logo" class="logo">
-            <select id="language-selector" class="language-selector" onchange="changeLanguage(this.value)">
-                <option value="en">English</option>
-                <option value="zh">中文</option>
-                <option value="de">Deutsch</option>
-                <option value="fr">Français</option>
-                <option value="es">Español</option>
-            </select>
-        </div>
-    </div>
-
     <div class="container">
-        <div class="form-section">
-            <h1 class="section-title" data-translate="title">Smart Security & Lighting Solution Generator</h1>
-            
-            <div class="form-group">
-                <label data-translate="location">Location Information:</label>
-                <textarea id="location" data-translate="location-placeholder" placeholder="Please enter detailed location information (e.g., city, district, environment characteristics)"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label data-translate="floor-plan">Floor Plan Information:</label>
-                <textarea id="floor_plan" data-translate="floor-plan-placeholder" placeholder="Please enter floor plan details (e.g., room count, area, layout features)"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label data-translate="requirements">Requirements:</label>
-                <textarea id="requirements" data-translate="requirements-placeholder" placeholder="Please enter your specific requirements (e.g., security focus areas, special lighting needs)"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label data-translate="images">Upload Floor Plan or Site Photos (Optional):</label>
-                <div class="file-upload" onclick="document.getElementById('images').click()">
-                    <span data-translate="upload-prompt">Click or drag files here to upload</span>
-                    <input type="file" id="images" multiple accept="image/*" onchange="handleFileSelect(event)">
-                </div>
-                <div id="preview-container" class="preview-container"></div>
-            </div>
-
-            <button onclick="generateSolution()" id="generateBtn" class="generate-btn" data-translate="generate">Generate Solution</button>
+        <h1>Eufy Master - Smart Solution</h1>
+        <div class="form-group">
+            <label for="location">Location</label>
+            <input type="text" id="location" placeholder="Enter location">
         </div>
-
-        <div id="loading" class="loading">
-            <div class="loading-spinner"></div>
-            <p data-translate="generating">Generating your solution, please wait...</p>
+        <div class="form-group">
+            <label for="floor_plan">Floor Plan</label>
+            <input type="text" id="floor_plan" placeholder="Enter floor plan">
         </div>
-
-        <div id="error-message" class="error-message"></div>
-
-        <div id="result" class="result-section">
-            <h2 data-translate="solution">Recommended Solution</h2>
-            <div class="result-content">
-                <h3 data-translate="analysis">Analysis</h3>
-                <pre id="reasoning"></pre>
-                
-                <h3 data-translate="recommendation">Recommendations</h3>
-                <pre id="recommendation"></pre>
-            </div>
+        <div class="form-group">
+            <label for="requirements">Requirements</label>
+            <textarea id="requirements" placeholder="Enter requirements"></textarea>
+        </div>
+        <button onclick="generateSolution()">Generate Solution</button>
+        <div class="result" id="result" style="display:none;">
+            <h2>Solution</h2>
+            <img src="image1.jpg" alt="Image 1">
+            <img src="image2.jpg" alt="Image 2">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody id="solution-table">
+                    <!-- Solution details will be inserted here -->
+                </tbody>
+            </table>
         </div>
     </div>
-
     <script>
-        // 语言配置
-        const translations = {
-            en: {
-                "title": "Smart Security & Lighting Solution Generator",
-                "location": "Location Information:",
-                "location-placeholder": "Please enter detailed location information (e.g., city, district, environment characteristics)",
-                "floor-plan": "Floor Plan Information:",
-                "floor-plan-placeholder": "Please enter floor plan details (e.g., room count, area, layout features)",
-                "requirements": "Requirements:",
-                "requirements-placeholder": "Please enter your specific requirements (e.g., security focus areas, special lighting needs)",
-                "images": "Upload Floor Plan or Site Photos (Optional):",
-                "upload-prompt": "Click or drag files here to upload",
-                "generate": "Generate Solution",
-                "generating": "Generating your solution, please wait...",
-                "solution": "Recommended Solution",
-                "analysis": "Analysis",
-                "recommendation": "Recommendations"
-            },
-            zh: {
-                "title": "智能安防照明方案生成器",
-                "location": "地理位置信息：",
-                "location-placeholder": "请输入详细的地理位置信息（如：城市、区域、环境特点等）",
-                "floor-plan": "户型信息：",
-                "floor-plan-placeholder": "请输入户型详细信息（如：房间数量、面积、布局特点等）",
-                "requirements": "需求信息：",
-                "requirements-placeholder": "请输入您的具体需求（如：安防重点区域、特殊照明要求等）",
-                "images": "上传户型图或现场照片（可选）：",
-                "upload-prompt": "点击或拖拽文件至此处上传",
-                "generate": "生成方案",
-                "generating": "正在生成方案，请稍候...",
-                "solution": "推荐方案",
-                "analysis": "分析过程",
-                "recommendation": "具体建议"
-            }
-            // 可以添加更多语言
-        };
-
-        function changeLanguage(lang) {
-            const elements = document.querySelectorAll('[data-translate]');
-            elements.forEach(element => {
-                const key = element.getAttribute('data-translate');
-                if (translations[lang] && translations[lang][key]) {
-                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                        element.placeholder = translations[lang][key];
-                    } else {
-                        element.textContent = translations[lang][key];
-                    }
-                }
-            });
-        }
-
-        let uploadedImages = [];
-
-        function handleFileSelect(event) {
-            const files = event.target.files;
-            const previewContainer = document.getElementById('preview-container');
-            previewContainer.innerHTML = '';
-            uploadedImages = [];
-
-            Array.from(files).forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'preview-image';
-                        previewContainer.appendChild(img);
-                    }
-                    reader.readAsDataURL(file);
-                    
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    
-                    fetch('/upload_image', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            uploadedImages.push(data.filepath);
-                        }
-                    })
-                    .catch(error => console.error('Upload error:', error));
-                }
-            });
-        }
-
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-            document.getElementById('generateBtn').disabled = show;
-        }
-
-        function showError(message) {
-            const errorDiv = document.getElementById('error-message');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 5000);
-        }
-
         function generateSolution() {
             const location = document.getElementById('location').value.trim();
-            const floor_plan = document.getElementById('floor_plan').value.trim();
+            const floorPlan = document.getElementById('floor_plan').value.trim();
             const requirements = document.getElementById('requirements').value.trim();
 
-            if (!location || !floor_plan || !requirements) {
-                showError(document.getElementById('language-selector').value === 'zh' ? 
-                    '请填写所有必要信息！' : 'Please fill in all required information!');
+            if (!location || !floorPlan || !requirements) {
+                alert('Please fill in all fields.');
                 return;
             }
 
             const data = {
                 location: location,
-                floor_plan: floor_plan,
-                requirements: requirements,
-                image_paths: uploadedImages
+                floor_plan: floorPlan,
+                requirements: requirements
             };
-
-            showLoading(true);
-            document.getElementById('result').style.display = 'none';
 
             fetch('/generate_solution', {
                 method: 'POST',
@@ -421,26 +132,24 @@
             })
             .then(response => response.json())
             .then(data => {
-                showLoading(false);
                 if (data.success) {
-                    document.getElementById('reasoning').textContent = data.solution.reasoning || 'No analysis available';
-                    document.getElementById('recommendation').textContent = data.solution.recommendation || 'No recommendations available';
+                    const solutionTable = document.getElementById('solution-table');
+                    solutionTable.innerHTML = `
+                        <tr>
+                            <td>Recommendation</td>
+                            <td>${data.solution.recommendation}</td>
+                        </tr>
+                    `;
                     document.getElementById('result').style.display = 'block';
-                    
-                    document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
                 } else {
-                    showError(data.error);
+                    alert('Error: ' + data.error);
                 }
             })
             .catch(error => {
-                showLoading(false);
-                showError('An error occurred. Please try again later.');
                 console.error('Error:', error);
+                alert('An error occurred. Please try again.');
             });
         }
-
-        // 初始化语言
-        changeLanguage('en');
     </script>
 </body>
 </html>
