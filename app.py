@@ -6,8 +6,8 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import datetime
 import logging
-import httpx
 from typing import Dict, Optional
+import httpx
 
 # 创建必要的文件夹
 UPLOAD_FOLDER = '/tmp/uploads'
@@ -23,8 +23,27 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-app = Flask(__name__)
+# 初始化Flask应用，指定静态文件夹
+app = Flask(__name__, static_folder='static')
 CORS(app)
+
+# 确保静态文件夹存在
+if not os.path.exists('static/images'):
+    os.makedirs('static/images')
+
+# 配置OpenAI客户端
+MODEL_ID = "volc-glm-plus"
+http_client = httpx.Client()
+client = OpenAI(
+    api_key=os.environ.get("ARK_API_KEY"),
+    base_url="https://ark.cn-beijing.volces.com/api/v3",
+    http_client=http_client
+)
+
+# 网站URL和图片链接
+SITE_URL = os.environ.get('SITE_URL', 'https://eufy-master.onrender.com')
+SAFETY_PLAN_IMAGE = f"{SITE_URL}/static/images/safety_plan.png"
+VALUE_PLAN_IMAGE = f"{SITE_URL}/static/images/value_plan.png"
 
 # eufy产品信息库
 EUFY_PRODUCTS = {
@@ -92,32 +111,37 @@ class RegionDetector:
                 """
             },
             "日本": {
-                "cultural_elements": ["极简主义", "空间利用", "和式美学"],
-                "design_focus": ["多功能空间", "隐藏式设计", "自然材质"],
+                "cultural_elements": ["和式美学", "极简主义", "自然材质"],
+                "design_focus": ["空间最大化", "功能性", "隐蔽式设计"],
                 "prompt_template": """
-                请特别注意以下日式设计要点：
-                1. 设备应尽可能隐藏或融入环境
-                2. 考虑空间的多功能转换
-                3. 使用简洁、不张扬的设备配置
-                4. 推荐带有木质或纸质元素的产品
-                5. 照明设计要考虑营造宁静氛围
+                请特别注意以下设计要点：
+                1. 安防设备尽量隐蔽，不破坏整体美感
+                2. 智能灯光设计符合和式美学
+                3. 设备安装位置需考虑空间最大化利用
+                4. 注重设备与传统元素的协调
+                5. 强调设备的静音性能
                 """
             },
             "中东": {
                 "cultural_elements": ["伊斯兰图案", "奢华风格", "隐私保护"],
-                "design_focus": ["高端配置", "安全保障", "气候应对"],
+                "design_focus": ["隐私安全", "炫耀性布置", "气候适应"],
                 "prompt_template": """
                 请特别注意以下设计要点：
-                1. 安防系统需要高度重视隐私保护
-                2. 考虑高温环境对设备的影响
-                3. 提供更强大的门窗安防方案
-                4. 照明可配合伊斯兰图案投影
-                5. 考虑沙尘环境的设备防护
+                1. 强化隐私保护功能
+                2. 设备外观应匹配奢华风格
+                3. 考虑高温气候对设备的影响
+                4. 室外设备需防沙防尘
+                5. 可结合伊斯兰图案元素进行装饰
                 """
+            },
+            "default": {
+                "cultural_elements": ["通用设计原则"],
+                "design_focus": ["实用性", "安全性"],
+                "prompt_template": """请提供通用的智能家居解决方案..."""
             }
         }
-    
-    def detect_region(self, location: str) -> Dict:
+
+    def detect_region(self, location: str) -> Optional[Dict]:
         """
         检测位置所属地区并返回相应的特征配置
         """
@@ -135,85 +159,55 @@ class RegionDetector:
         # 如果没有匹配到任何地区，返回默认配置
         return {
             "region": "default",
-            "characteristics": {
-                "cultural_elements": ["通用设计原则"],
-                "design_focus": ["实用性", "安全性"],
-                "prompt_template": "请提供通用的智能家居解决方案..."
-            }
+            "characteristics": self.region_characteristics["default"]
         }
 
-# 实例化地区检测器
+# 创建地区检测器实例
 region_detector = RegionDetector()
 
-# 文件上传配置
-class UploadConfig:
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB最大限制
-    
-    @staticmethod
-    def allowed_file(filename):
-        return '.' in filename and \
-               filename.rsplit('.', 1)[1].lower() in UploadConfig.ALLOWED_EXTENSIONS
-
-# 应用配置
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = UploadConfig.MAX_CONTENT_LENGTH
-
-# API配置
-os.environ["ARK_API_KEY"] = "b5d630b2-e00c-4eeb-b71c-bd92384578bc"
-MODEL_ID = "deepseek-v3-241226"
-
-# 初始化OpenAI客户端
-http_client = httpx.Client()
-client = OpenAI(
-    api_key=os.environ.get("ARK_API_KEY"),
-    base_url="https://ark.cn-beijing.volces.com/api/v3",
-    http_client=http_client
-)
-
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
     try:
-        # 检查是否有文件
         if 'file' not in request.files:
-            return jsonify({'success': False, 'error': '没有文件'})
+            return jsonify({
+                "success": False,
+                "error": "No file part"
+            })
         
         file = request.files['file']
         if file.filename == '':
-            return jsonify({'success': False, 'error': '没有选择文件'})
-        
-        if not UploadConfig.allowed_file(file.filename):
-            return jsonify({'success': False, 'error': '不支持的文件类型'})
+            return jsonify({
+                "success": False,
+                "error": "No selected file"
+            })
         
         # 生成安全的文件名
         filename = secure_filename(file.filename)
-        
-        # 创建基于日期的子文件夹
-        date_folder = datetime.datetime.now().strftime('%Y%m%d')
-        upload_path = os.path.join(app.config['UPLOAD_FOLDER'], date_folder)
-        
-        if not os.path.exists(upload_path):
-            os.makedirs(upload_path)
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        filename = f"{timestamp}_{filename}"
         
         # 保存文件
-        filepath = os.path.join(upload_path, filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
         file.save(filepath)
         
-        logging.info(f"File uploaded successfully: {filepath}")
+        logging.info(f"Image uploaded: {filepath}")
         
         return jsonify({
-            'success': True,
-            'filename': filename,
-            'filepath': filepath
+            "success": True,
+            "filename": filename,
+            "filepath": filepath
         })
-        
+    
     except Exception as e:
-        logging.error(f"File upload error: {str(e)}")
-        return jsonify({'success': False, 'error': str(e)})
+        logging.error(f"Error in upload_image: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
 
 @app.route('/generate_solution', methods=['POST'])
 def generate_solution():
@@ -264,6 +258,8 @@ def generate_solution():
 
 # 方案一：安全至上方案
 
+![安全至上方案]({SAFETY_PLAN_IMAGE})
+
 ## 安防设备
 
 | 产品名称 | 数量 | 安装位置 | 单价 | 小计 |
@@ -292,6 +288,8 @@ def generate_solution():
 
 # 方案二：性价比方案
 
+![性价比方案]({VALUE_PLAN_IMAGE})
+
 ## 安防设备
 
 | 产品名称 | 数量 | 安装位置 | 单价 | 小计 |
@@ -319,6 +317,8 @@ def generate_solution():
 
 ## 系统集成建议
 ...
+
+重要：你必须在"方案一：安全至上方案"标题下放置安全方案图片，在"方案二：性价比方案"标题下放置性价比方案图片，不可更改图片链接。
 
 以上Markdown表格格式必须严格遵守，请确保所有产品都来自以下eufy产品列表：
 {product_info}
