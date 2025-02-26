@@ -161,7 +161,7 @@ app.config['MAX_CONTENT_LENGTH'] = UploadConfig.MAX_CONTENT_LENGTH
 
 # API配置
 os.environ["ARK_API_KEY"] = "b5d630b2-e00c-4eeb-b71c-bd92384578bc"
-MODEL_ID = "bot-20250223165821-2cmrc"
+MODEL_ID = "deepseek-v3-241226"
 
 # 初始化OpenAI客户端
 http_client = httpx.Client()
