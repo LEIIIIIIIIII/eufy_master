@@ -186,7 +186,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        .result-section {
+        .result-container {
             display: none;
             background: white;
             border-radius: 12px;
@@ -195,18 +195,90 @@
             margin-top: 30px;
         }
 
-        .result-content {
-            line-height: 1.6;
-            font-size: 15px;
+        .region-info {
+            margin-bottom: 20px;
         }
 
-        .error-message {
-            color: #ff4444;
-            background-color: #ffe6e6;
-            padding: 10px;
+        .tabs {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tab-header {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            background-color: var(--eufy-green);
+            color: white;
+            border: none;
+            padding: 10px 20px;
             border-radius: 4px;
-            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background-color: #00B058;
+        }
+
+        .tab-content {
+            flex: 1;
+        }
+
+        .tab-pane {
             display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .recommendation {
+            line-height: 1.6;
+        }
+
+        .markdown-content {
+            line-height: 1.6;
+        }
+        
+        .markdown-content h2 {
+            color: var(--eufy-green);
+            margin-top: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .markdown-content h3 {
+            color: var(--eufy-dark);
+            margin-top: 20px;
+        }
+        
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .markdown-content th {
+            background-color: var(--eufy-green);
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        .markdown-content td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .markdown-content tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content ul {
+            margin-left: 20px;
         }
 
         @media (max-width: 768px) {
@@ -276,18 +348,29 @@
 
         <div id="error-message" class="error-message"></div>
 
-        <div id="result" class="result-section">
-            <h2 data-translate="solution">Recommended Solution</h2>
-            <div class="result-content">
-                <h3 data-translate="analysis">Analysis</h3>
-                <pre id="reasoning"></pre>
+        <div id="result" class="result-container" style="display: none;">
+            <h2>智能家居解决方案</h2>
+            
+            <div class="region-info" id="region-info-section">
+                <h3>地区特征分析</h3>
+                <div id="region-info"></div>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab-header">
+                    <button class="tab-btn active" onclick="switchTab('recommendation')">方案详情</button>
+                </div>
                 
-                <h3 data-translate="recommendation">Recommendations</h3>
-                <pre id="recommendation"></pre>
+                <div class="tab-content">
+                    <div id="recommendation-tab" class="tab-pane active">
+                        <div id="recommendation" class="recommendation markdown-content"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         // 语言配置
         const translations = {
@@ -423,8 +506,7 @@
             .then(data => {
                 showLoading(false);
                 if (data.success) {
-                    document.getElementById('reasoning').textContent = data.solution.reasoning || 'No analysis available';
-                    document.getElementById('recommendation').textContent = data.solution.recommendation || 'No recommendations available';
+                    updateResultContent(data);
                     document.getElementById('result').style.display = 'block';
                     
                     document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
@@ -437,6 +519,24 @@
                 showError('An error occurred. Please try again later.');
                 console.error('Error:', error);
             });
+        }
+
+        function updateResultContent(data) {
+            if (data.solution.region_info) {
+                const regionInfoEl = document.getElementById('region-info');
+                regionInfoEl.innerHTML = `
+                    <p><strong>检测到的地区：</strong> ${data.solution.region_info.region}</p>
+                    <p><strong>文化元素：</strong> ${data.solution.region_info.cultural_elements.join(', ')}</p>
+                    <p><strong>设计重点：</strong> ${data.solution.region_info.design_focus.join(', ')}</p>
+                `;
+                document.getElementById('region-info-section').style.display = 'block';
+            } else {
+                document.getElementById('region-info-section').style.display = 'none';
+            }
+            
+            // 使用 marked.js 渲染 Markdown
+            const recommendationEl = document.getElementById('recommendation');
+            recommendationEl.innerHTML = marked.parse(data.solution.recommendation);
         }
 
         // 初始化语言
