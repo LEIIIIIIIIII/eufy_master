@@ -27,23 +27,18 @@ logging.basicConfig(
 app = Flask(__name__, static_folder='static')
 CORS(app)
 
-# 确保静态文件夹存在
+# 确保静态图片文件夹存在
 if not os.path.exists('static/images'):
     os.makedirs('static/images')
 
-# 配置OpenAI客户端
-MODEL_ID = "volc-glm-plus"
-http_client = httpx.Client()
-client = OpenAI(
-    api_key=os.environ.get("ARK_API_KEY"),
-    base_url="https://ark.cn-beijing.volces.com/api/v3",
-    http_client=http_client
-)
+# 配置
+API_KEY = "b5d630b2-e00c-4eeb-b71c-bd92384578bc"  # 使用提供的API密钥
+MODEL_ID = "deepseek-v3-241226"  # 使用提供的模型ID
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-# 网站URL和图片链接
-SITE_URL = os.environ.get('SITE_URL', 'https://eufy-master.onrender.com')
-SAFETY_PLAN_IMAGE = f"{SITE_URL}/static/images/safety_plan.png"
-VALUE_PLAN_IMAGE = f"{SITE_URL}/static/images/value_plan.png"
+# 图片路径配置
+SAFETY_PLAN_IMAGE = "/static/images/safety_plan.png"
+VALUE_PLAN_IMAGE = "/static/images/value_plan.png"
 
 # eufy产品信息库
 EUFY_PRODUCTS = {
@@ -69,6 +64,14 @@ EUFY_PRODUCTS = {
         {"name": "RoboVac X8", "description": "激光导航扫地机器人", "price": "¥2,999"}
     ]
 }
+
+# 初始化OpenAI客户端
+http_client = httpx.Client()
+client = OpenAI(
+    api_key=API_KEY,  # 使用提供的API密钥
+    base_url="https://ark.cn-beijing.volces.com/api/v3",
+    http_client=http_client
+)
 
 # 地区特征检测类
 class RegionDetector:
@@ -111,37 +114,44 @@ class RegionDetector:
                 """
             },
             "日本": {
-                "cultural_elements": ["和式美学", "极简主义", "自然材质"],
-                "design_focus": ["空间最大化", "功能性", "隐蔽式设计"],
+                "cultural_elements": ["和式空间", "极简主义", "自然元素"],
+                "design_focus": ["空间利用", "隐蔽式设计", "多功能"],
                 "prompt_template": """
                 请特别注意以下设计要点：
-                1. 安防设备尽量隐蔽，不破坏整体美感
-                2. 智能灯光设计符合和式美学
-                3. 设备安装位置需考虑空间最大化利用
-                4. 注重设备与传统元素的协调
-                5. 强调设备的静音性能
+                1. 设备应尽量隐蔽，不破坏空间和谐
+                2. 考虑小空间的高效利用
+                3. 注重设备与传统元素的融合
+                4. 灯光应营造温和舒适的氛围
+                5. 安防设备应不影响生活动线
                 """
             },
             "中东": {
                 "cultural_elements": ["伊斯兰图案", "奢华风格", "隐私保护"],
-                "design_focus": ["隐私安全", "炫耀性布置", "气候适应"],
+                "design_focus": ["隐私安全", "温度控制", "奢华体验"],
                 "prompt_template": """
                 请特别注意以下设计要点：
-                1. 强化隐私保护功能
-                2. 设备外观应匹配奢华风格
-                3. 考虑高温气候对设备的影响
-                4. 室外设备需防沙防尘
-                5. 可结合伊斯兰图案元素进行装饰
+                1. 强调家庭隐私保护
+                2. 考虑高温环境下设备的散热
+                3. 设计应体现奢华感
+                4. 注重女性空间的特殊安防需求
+                5. 考虑宗教习俗对设备布置的影响
                 """
             },
             "default": {
                 "cultural_elements": ["通用设计原则"],
                 "design_focus": ["实用性", "安全性"],
-                "prompt_template": """请提供通用的智能家居解决方案..."""
+                "prompt_template": """
+                请注意以下通用设计要点：
+                1. 设备布置应符合人体工程学
+                2. 确保安防覆盖无死角
+                3. 照明应满足基本功能需求
+                4. 系统应易于使用和维护
+                5. 考虑未来扩展的可能性
+                """
             }
         }
-
-    def detect_region(self, location: str) -> Optional[Dict]:
+    
+    def detect_region(self, location: str) -> Dict:
         """
         检测位置所属地区并返回相应的特征配置
         """
@@ -159,11 +169,15 @@ class RegionDetector:
         # 如果没有匹配到任何地区，返回默认配置
         return {
             "region": "default",
-            "characteristics": self.region_characteristics["default"]
+            "characteristics": self.region_characteristics.get("default", {})
         }
 
-# 创建地区检测器实例
+# 初始化地区检测器
 region_detector = RegionDetector()
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def index():
@@ -176,32 +190,34 @@ def upload_image():
             return jsonify({
                 "success": False,
                 "error": "No file part"
-            })
+            }), 400
         
         file = request.files['file']
+        
         if file.filename == '':
             return jsonify({
                 "success": False,
                 "error": "No selected file"
+            }), 400
+        
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            new_filename = f"{timestamp}_{filename}"
+            filepath = os.path.join(UPLOAD_FOLDER, new_filename)
+            file.save(filepath)
+            
+            return jsonify({
+                "success": True,
+                "filename": new_filename,
+                "filepath": filepath
             })
-        
-        # 生成安全的文件名
-        filename = secure_filename(file.filename)
-        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        filename = f"{timestamp}_{filename}"
-        
-        # 保存文件
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(filepath)
-        
-        logging.info(f"Image uploaded: {filepath}")
-        
-        return jsonify({
-            "success": True,
-            "filename": filename,
-            "filepath": filepath
-        })
-    
+        else:
+            return jsonify({
+                "success": False,
+                "error": "File type not allowed"
+            }), 400
+            
     except Exception as e:
         logging.error(f"Error in upload_image: {str(e)}")
         return jsonify({
@@ -328,7 +344,7 @@ def generate_solution():
         
         # 调用API
         response = client.chat.completions.create(
-            model=MODEL_ID,
+            model=MODEL_ID,  # 使用提供的模型ID
             messages=[{
                 "role": "user",
                 "content": prompt
