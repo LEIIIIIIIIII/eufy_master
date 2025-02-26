@@ -44,141 +44,173 @@
             height: 40px;
         }
 
-        .language-selector {
-            position: relative;
-            margin-left: 20px;
+        .lang-switch {
+            display: flex;
+            align-items: center;
         }
 
-        .language-selector select {
-            padding: 8px 30px 8px 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: white;
-            font-size: 14px;
-            appearance: none;
+        .lang-btn {
+            background: none;
+            border: none;
             cursor: pointer;
+            padding: 5px 10px;
+            color: var(--eufy-gray);
+            font-weight: 500;
+        }
+
+        .lang-btn.active {
+            color: var(--eufy-green);
+            border-bottom: 2px solid var(--eufy-green);
         }
 
         .container {
             max-width: 1200px;
-            margin: 100px auto 40px;
-            padding: 20px;
+            margin: 100px auto 50px;
+            padding: 0 20px;
         }
 
-        .form-section {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 30px;
-            margin-bottom: 30px;
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
         }
 
-        .section-title {
-            font-size: 24px;
-            font-weight: 500;
-            margin-bottom: 20px;
+        .page-title h1 {
             color: var(--eufy-dark);
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: var(--eufy-gray);
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 40px;
+            margin-bottom: 40px;
         }
 
         .form-group {
             margin-bottom: 25px;
         }
 
-        label {
+        .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
             color: var(--eufy-dark);
         }
 
-        textarea {
+        .form-control {
             width: 100%;
-            padding: 12px;
+            padding: 12px 15px;
             border: 1px solid #ddd;
-            border-radius: 8px;
-            resize: vertical;
-            min-height: 100px;
-            font-size: 14px;
+            border-radius: 4px;
+            font-size: 16px;
             transition: border-color 0.3s;
         }
 
-        textarea:focus {
+        .form-control:focus {
+            border-color: var(--eufy-green);
             outline: none;
-            border-color: var(--eufy-green);
-            box-shadow: 0 0 0 2px rgba(0,198,98,0.1);
         }
 
-        .file-upload {
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
         }
 
-        .file-upload:hover {
-            border-color: var(--eufy-green);
-            background-color: rgba(0,198,98,0.05);
-        }
-
-        .file-upload input[type="file"] {
-            display: none;
-        }
-
-        .preview-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .preview-image {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .generate-btn {
+        .btn {
+            display: inline-block;
             background-color: var(--eufy-green);
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
+            border-radius: 4px;
+            padding: 12px 30px;
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #00A952;
+        }
+
+        .file-upload {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .upload-btn {
+            border: 1px dashed #ccc;
+            color: var(--eufy-gray);
+            background-color: white;
+            padding: 30px;
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: center;
+            width: 150px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .upload-btn:hover {
+            border-color: var(--eufy-green);
+            color: var(--eufy-green);
+        }
+
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
             width: 100%;
-            max-width: 300px;
-            margin: 20px auto;
-            display: block;
+            height: 100%;
         }
 
-        .generate-btn:hover {
-            background-color: #00B058;
-        }
-
-        .generate-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
+        .thumbnail {
+            width: 150px;
+            height: 100px;
+            border-radius: 4px;
+            object-fit: cover;
+            border: 1px solid #eee;
         }
 
         .loading {
-            text-align: center;
-            padding: 20px;
             display: none;
+            text-align: center;
+            margin: 20px 0;
         }
 
         .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--eufy-green);
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--eufy-green);
             border-radius: 50%;
             width: 40px;
             height: 40px;
             animation: spin 1s linear infinite;
-            margin: 0 auto;
+            margin: 0 auto 15px;
         }
 
         @keyframes spin {
@@ -186,45 +218,51 @@
             100% { transform: rotate(360deg); }
         }
 
-        .result-container {
+        .error {
+            color: #e74c3c;
+            margin-top: 5px;
             display: none;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 30px;
-            margin-top: 30px;
         }
 
-        .region-info {
-            margin-bottom: 20px;
+        .result-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .result-container h2 {
+            color: var(--eufy-dark);
+            margin-top: 0;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
         }
 
         .tabs {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-top: 30px;
         }
 
         .tab-header {
             display: flex;
-            gap: 10px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
         }
 
         .tab-btn {
-            background-color: var(--eufy-green);
-            color: white;
-            border: none;
             padding: 10px 20px;
-            border-radius: 4px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
             cursor: pointer;
+            color: var(--eufy-gray);
+            font-weight: 500;
         }
 
         .tab-btn.active {
-            background-color: #00B058;
-        }
-
-        .tab-content {
-            flex: 1;
+            color: var(--eufy-green);
+            border-bottom-color: var(--eufy-green);
         }
 
         .tab-pane {
@@ -235,10 +273,10 @@
             display: block;
         }
 
-        .recommendation {
+        .recommendation, .reasoning {
             line-height: 1.6;
         }
-
+        
         .markdown-content {
             line-height: 1.6;
         }
@@ -281,84 +319,116 @@
             margin-left: 20px;
         }
 
+        .region-info {
+            background-color: var(--eufy-light-gray);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .region-info h3 {
+            color: var(--eufy-dark);
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .region-info p {
+            margin: 5px 0;
+        }
+
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                margin-top: 80px;
             }
-
-            .form-section {
+            
+            .page-title h1 {
+                font-size: 28px;
+            }
+            
+            .page-title p {
+                font-size: 16px;
+            }
+            
+            .form-container, .result-container {
                 padding: 20px;
             }
+        }
 
-            .section-title {
-                font-size: 20px;
-            }
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--eufy-gray);
+            background-color: var(--eufy-light-gray);
+        }
+
+        footer a {
+            color: var(--eufy-green);
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <div class="header">
+    <header class="header">
         <div class="header-content">
-            <img src="https://us.eufy.com/cdn/shop/files/eufy_logo.png" alt="Eufy Logo" class="logo">
-            <select id="language-selector" class="language-selector" onchange="changeLanguage(this.value)">
-                <option value="en">English</option>
-                <option value="zh">中文</option>
-                <option value="de">Deutsch</option>
-                <option value="fr">Français</option>
-                <option value="es">Español</option>
-            </select>
+            <img src="https://cdn.shopify.com/s/files/1/0526/6910/9452/files/logo_180x70_7f6fdfb2-fba1-4e8b-85c5-5f98fc1d1734_150x.png" alt="eufy" class="logo">
+            <div class="lang-switch">
+                <button class="lang-btn active" onclick="changeLanguage('en')">EN</button>
+                <button class="lang-btn" onclick="changeLanguage('zh')">中文</button>
+            </div>
         </div>
-    </div>
+    </header>
 
     <div class="container">
-        <div class="form-section">
-            <h1 class="section-title" data-translate="title">Smart Security & Lighting Solution Generator</h1>
-            
-            <div class="form-group">
-                <label data-translate="location">Location Information:</label>
-                <textarea id="location" data-translate="location-placeholder" placeholder="Please enter detailed location information (e.g., city, district, environment characteristics)"></textarea>
-            </div>
+        <div class="page-title">
+            <h1 data-lang-en="Smart Security & Lighting Solution" data-lang-zh="智能安防与照明解决方案">Smart Security & Lighting Solution</h1>
+            <p data-lang-en="Design your perfect eufy security and lighting system with our AI-powered solution generator." data-lang-zh="使用我们的AI驱动的方案生成器，为您打造完美的eufy安防和照明系统。">Design your perfect eufy security and lighting system with our AI-powered solution generator.</p>
+        </div>
 
+        <div class="form-container">
             <div class="form-group">
-                <label data-translate="floor-plan">Floor Plan Information:</label>
-                <textarea id="floor_plan" data-translate="floor-plan-placeholder" placeholder="Please enter floor plan details (e.g., room count, area, layout features)"></textarea>
+                <label data-lang-en="Location" data-lang-zh="位置信息">Location</label>
+                <input type="text" id="location" class="form-control" data-lang-placeholder-en="E.g. Beijing, China; 3-bedroom apartment" data-lang-placeholder-zh="例如：中国北京；三居室公寓" placeholder="E.g. Beijing, China; 3-bedroom apartment">
             </div>
-
             <div class="form-group">
-                <label data-translate="requirements">Requirements:</label>
-                <textarea id="requirements" data-translate="requirements-placeholder" placeholder="Please enter your specific requirements (e.g., security focus areas, special lighting needs)"></textarea>
+                <label data-lang-en="Floor Plan Description" data-lang-zh="户型描述">Floor Plan Description</label>
+                <textarea id="floor-plan" class="form-control" data-lang-placeholder-en="Describe your home layout, e.g. Two floors, 3 bedrooms, 2 bathrooms, living room, kitchen, balcony..." data-lang-placeholder-zh="描述您的家居布局，如：两层楼，3个卧室，2个卫生间，客厅，厨房，阳台..." placeholder="Describe your home layout, e.g. Two floors, 3 bedrooms, 2 bathrooms, living room, kitchen, balcony..."></textarea>
             </div>
-
             <div class="form-group">
-                <label data-translate="images">Upload Floor Plan or Site Photos (Optional):</label>
-                <div class="file-upload" onclick="document.getElementById('images').click()">
-                    <span data-translate="upload-prompt">Click or drag files here to upload</span>
-                    <input type="file" id="images" multiple accept="image/*" onchange="handleFileSelect(event)">
+                <label data-lang-en="Security & Lighting Requirements" data-lang-zh="安防与照明需求">Security & Lighting Requirements</label>
+                <textarea id="requirements" class="form-control" data-lang-placeholder-en="Describe your specific needs, e.g. Monitor front door and backyard, smart lighting for living room, etc." data-lang-placeholder-zh="描述您的具体需求，如：监控前门和后院，客厅智能照明等。" placeholder="Describe your specific needs, e.g. Monitor front door and backyard, smart lighting for living room, etc."></textarea>
+            </div>
+            <div class="form-group">
+                <label data-lang-en="Floor Plan Images (Optional)" data-lang-zh="户型图片（可选）">Floor Plan Images (Optional)</label>
+                <div class="file-upload" id="file-upload-area">
+                    <div class="upload-btn-wrapper">
+                        <div class="upload-btn">
+                            <span data-lang-en="+ Add Image" data-lang-zh="+ 添加图片">+ Add Image</span>
+                            <span data-lang-en="Max 16MB" data-lang-zh="最大16MB">Max 16MB</span>
+                        </div>
+                        <input type="file" accept="image/*" onchange="uploadImage(this)">
+                    </div>
                 </div>
-                <div id="preview-container" class="preview-container"></div>
             </div>
-
-            <button onclick="generateSolution()" id="generateBtn" class="generate-btn" data-translate="generate">Generate Solution</button>
+            <div class="error" id="error-message"></div>
+            <button class="btn" onclick="generateSolution()" data-lang-en="Generate Solution" data-lang-zh="生成解决方案">Generate Solution</button>
         </div>
 
-        <div id="loading" class="loading">
+        <div class="loading" id="loading">
             <div class="loading-spinner"></div>
-            <p data-translate="generating">Generating your solution, please wait...</p>
+            <p data-lang-en="Generating your personalized solution..." data-lang-zh="正在生成您的个性化解决方案...">Generating your personalized solution...</p>
         </div>
-
-        <div id="error-message" class="error-message"></div>
 
         <div id="result" class="result-container" style="display: none;">
-            <h2>智能家居解决方案</h2>
+            <h2 data-lang-en="Smart Home Solution" data-lang-zh="智能家居解决方案">Smart Home Solution</h2>
             
             <div class="region-info" id="region-info-section">
-                <h3>地区特征分析</h3>
+                <h3 data-lang-en="Regional Analysis" data-lang-zh="地区特征分析">Regional Analysis</h3>
                 <div id="region-info"></div>
             </div>
             
             <div class="tabs">
                 <div class="tab-header">
-                    <button class="tab-btn active" onclick="switchTab('recommendation')">方案详情</button>
+                    <button class="tab-btn active" onclick="switchTab('recommendation')" data-lang-en="Solution Details" data-lang-zh="方案详情">Solution Details</button>
                 </div>
                 
                 <div class="tab-content">
@@ -370,118 +440,144 @@
         </div>
     </div>
 
+    <footer>
+        <p data-lang-en="© 2024 eufy Master. Powered by AI." data-lang-zh="© 2024 eufy Master. 由AI提供技术支持。">© 2024 eufy Master. Powered by AI.</p>
+        <p data-lang-en="Not affiliated with eufy Inc." data-lang-zh="与eufy公司无附属关系。">Not affiliated with eufy Inc.</p>
+    </footer>
+
+    <!-- 添加 Markdown 转换库 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
     <script>
-        // 语言配置
+        // 语言数据
         const translations = {
-            en: {
-                "title": "Smart Security & Lighting Solution Generator",
-                "location": "Location Information:",
-                "location-placeholder": "Please enter detailed location information (e.g., city, district, environment characteristics)",
-                "floor-plan": "Floor Plan Information:",
-                "floor-plan-placeholder": "Please enter floor plan details (e.g., room count, area, layout features)",
-                "requirements": "Requirements:",
-                "requirements-placeholder": "Please enter your specific requirements (e.g., security focus areas, special lighting needs)",
-                "images": "Upload Floor Plan or Site Photos (Optional):",
-                "upload-prompt": "Click or drag files here to upload",
-                "generate": "Generate Solution",
-                "generating": "Generating your solution, please wait...",
-                "solution": "Recommended Solution",
-                "analysis": "Analysis",
-                "recommendation": "Recommendations"
-            },
-            zh: {
-                "title": "智能安防照明方案生成器",
-                "location": "地理位置信息：",
-                "location-placeholder": "请输入详细的地理位置信息（如：城市、区域、环境特点等）",
-                "floor-plan": "户型信息：",
-                "floor-plan-placeholder": "请输入户型详细信息（如：房间数量、面积、布局特点等）",
-                "requirements": "需求信息：",
-                "requirements-placeholder": "请输入您的具体需求（如：安防重点区域、特殊照明要求等）",
-                "images": "上传户型图或现场照片（可选）：",
-                "upload-prompt": "点击或拖拽文件至此处上传",
-                "generate": "生成方案",
-                "generating": "正在生成方案，请稍候...",
-                "solution": "推荐方案",
-                "analysis": "分析过程",
-                "recommendation": "具体建议"
-            }
-            // 可以添加更多语言
+            'en': {},
+            'zh': {}
         };
-
+        
+        let currentLanguage = 'en';
+        const uploadedImages = [];
+        
+        // 切换语言
         function changeLanguage(lang) {
-            const elements = document.querySelectorAll('[data-translate]');
-            elements.forEach(element => {
-                const key = element.getAttribute('data-translate');
-                if (translations[lang] && translations[lang][key]) {
-                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                        element.placeholder = translations[lang][key];
-                    } else {
-                        element.textContent = translations[lang][key];
-                    }
-                }
+            currentLanguage = lang;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.lang-btn[onclick="changeLanguage('${lang}')"]`).classList.add('active');
+            
+            // 更新所有带有 data-lang 属性的元素
+            document.querySelectorAll('[data-lang-' + lang + ']').forEach(el => {
+                el.textContent = el.getAttribute('data-lang-' + lang);
+            });
+            
+            // 更新所有输入框的占位符
+            document.querySelectorAll('[data-lang-placeholder-' + lang + ']').forEach(el => {
+                el.placeholder = el.getAttribute('data-lang-placeholder-' + lang);
             });
         }
-
-        let uploadedImages = [];
-
-        function handleFileSelect(event) {
-            const files = event.target.files;
-            const previewContainer = document.getElementById('preview-container');
-            previewContainer.innerHTML = '';
-            uploadedImages = [];
-
-            Array.from(files).forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'preview-image';
-                        previewContainer.appendChild(img);
-                    }
-                    reader.readAsDataURL(file);
+        
+        // 上传图片
+        function uploadImage(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // 检查文件类型
+                const fileType = file.type;
+                if (!fileType.match(/image.*/)) {
+                    showError(currentLanguage === 'en' ? 'Please upload an image file' : '请上传图片文件');
+                    return;
+                }
+                
+                // 创建 FormData
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                // 显示上传中状态
+                const uploadBtn = input.parentElement;
+                uploadBtn.style.opacity = 0.5;
+                
+                // 发送上传请求
+                fetch('/upload_image', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    uploadBtn.style.opacity = 1;
                     
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    
-                    fetch('/upload_image', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
+                    if (data.success) {
+                        // 创建缩略图
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            // 记录上传的图片路径
                             uploadedImages.push(data.filepath);
+                            
+                            // 创建缩略图
+                            const thumbnail = document.createElement('img');
+                            thumbnail.src = e.target.result;
+                            thumbnail.className = 'thumbnail';
+                            thumbnail.title = data.filename;
+                            
+                            // 在上传按钮前添加缩略图
+                            document.getElementById('file-upload-area').insertBefore(thumbnail, uploadBtn);
                         }
-                    })
-                    .catch(error => console.error('Upload error:', error));
-                }
-            });
+                        reader.readAsDataURL(file);
+                    } else {
+                        showError(data.error);
+                    }
+                })
+                .catch(error => {
+                    uploadBtn.style.opacity = 1;
+                    showError(currentLanguage === 'en' ? 'Upload failed' : '上传失败');
+                    console.error('Error:', error);
+                });
+            }
         }
-
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-            document.getElementById('generateBtn').disabled = show;
-        }
-
+        
+        // 显示错误信息
         function showError(message) {
-            const errorDiv = document.getElementById('error-message');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
+            const errorEl = document.getElementById('error-message');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            
             setTimeout(() => {
-                errorDiv.style.display = 'none';
+                errorEl.style.display = 'none';
             }, 5000);
         }
-
+        
+        // 显示/隐藏加载状态
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+        
+        // 切换标签页
+        function switchTab(tabName) {
+            // 更新标签按钮状态
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.tab-btn[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            
+            // 更新标签内容显示
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+        
+        // 生成解决方案
         function generateSolution() {
-            const location = document.getElementById('location').value.trim();
-            const floor_plan = document.getElementById('floor_plan').value.trim();
-            const requirements = document.getElementById('requirements').value.trim();
-
+            const location = document.getElementById('location').value;
+            const floor_plan = document.getElementById('floor-plan').value;
+            const requirements = document.getElementById('requirements').value;
+            
+            // 验证输入
             if (!location || !floor_plan || !requirements) {
-                showError(document.getElementById('language-selector').value === 'zh' ? 
-                    '请填写所有必要信息！' : 'Please fill in all required information!');
+                showError(currentLanguage === 'en' ? 
+                    'Please fill in all required information!' : '请填写所有必要信息！');
                 return;
             }
 
@@ -506,9 +602,24 @@
             .then(data => {
                 showLoading(false);
                 if (data.success) {
-                    updateResultContent(data);
-                    document.getElementById('result').style.display = 'block';
+                    // 使用 marked.js 渲染 Markdown
+                    const recommendationEl = document.getElementById('recommendation');
+                    recommendationEl.innerHTML = marked.parse(data.solution.recommendation);
                     
+                    // 显示地区信息
+                    if (data.solution.region_info) {
+                        const regionInfoEl = document.getElementById('region-info');
+                        regionInfoEl.innerHTML = `
+                            <p><strong>${currentLanguage === 'en' ? 'Detected Region' : '检测到的地区'}:</strong> ${data.solution.region_info.region}</p>
+                            <p><strong>${currentLanguage === 'en' ? 'Cultural Elements' : '文化元素'}:</strong> ${data.solution.region_info.cultural_elements.join(', ')}</p>
+                            <p><strong>${currentLanguage === 'en' ? 'Design Focus' : '设计重点'}:</strong> ${data.solution.region_info.design_focus.join(', ')}</p>
+                        `;
+                        document.getElementById('region-info-section').style.display = 'block';
+                    } else {
+                        document.getElementById('region-info-section').style.display = 'none';
+                    }
+                    
+                    document.getElementById('result').style.display = 'block';
                     document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
                 } else {
                     showError(data.error);
@@ -516,27 +627,9 @@
             })
             .catch(error => {
                 showLoading(false);
-                showError('An error occurred. Please try again later.');
+                showError(currentLanguage === 'en' ? 'An error occurred. Please try again later.' : '发生错误，请稍后再试。');
                 console.error('Error:', error);
             });
-        }
-
-        function updateResultContent(data) {
-            if (data.solution.region_info) {
-                const regionInfoEl = document.getElementById('region-info');
-                regionInfoEl.innerHTML = `
-                    <p><strong>检测到的地区：</strong> ${data.solution.region_info.region}</p>
-                    <p><strong>文化元素：</strong> ${data.solution.region_info.cultural_elements.join(', ')}</p>
-                    <p><strong>设计重点：</strong> ${data.solution.region_info.design_focus.join(', ')}</p>
-                `;
-                document.getElementById('region-info-section').style.display = 'block';
-            } else {
-                document.getElementById('region-info-section').style.display = 'none';
-            }
-            
-            // 使用 marked.js 渲染 Markdown
-            const recommendationEl = document.getElementById('recommendation');
-            recommendationEl.innerHTML = marked.parse(data.solution.recommendation);
         }
 
         // 初始化语言
