@@ -168,58 +168,40 @@
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
-            margin-top: 15px;
-        }
-
-        .upload-btn-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            cursor: pointer;
+            margin-top: 10px;
         }
 
         .upload-btn {
-            border: 1px dashed #ccc;
-            color: var(--eufy-gray);
-            background-color: white;
-            padding: 30px;
-            border-radius: 4px;
-            font-size: 14px;
-            text-align: center;
-            width: 150px;
-            height: 100px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;
+            width: 100px;
+            height: 100px;
+            border: 2px dashed #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: border-color 0.3s;
         }
 
         .upload-btn:hover {
             border-color: var(--eufy-green);
-            color: var(--eufy-green);
         }
 
-        .upload-btn i {
+        .upload-btn input {
+            display: none;
+        }
+
+        .upload-icon {
             font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .upload-btn-wrapper input[type=file] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            cursor: pointer;
+            color: var(--eufy-gray);
         }
 
         .thumbnail {
-            width: 150px;
+            width: 100px;
             height: 100px;
             object-fit: cover;
             border-radius: 4px;
-            border: 1px solid #eee;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .result-container {
@@ -227,14 +209,15 @@
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             padding: 40px;
-            margin-top: 40px;
+            margin-bottom: 40px;
         }
 
         .result-container h2 {
             color: var(--eufy-dark);
             margin-top: 0;
             margin-bottom: 30px;
-            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
         }
 
         .region-info {
@@ -246,12 +229,9 @@
 
         .region-info h3 {
             margin-top: 0;
-            margin-bottom: 15px;
             color: var(--eufy-dark);
-        }
-
-        .region-info p {
-            margin: 8px 0;
+            font-size: 18px;
+            margin-bottom: 15px;
         }
 
         .tabs {
@@ -265,19 +245,22 @@
         }
 
         .tab-btn {
+            padding: 10px 20px;
             background: none;
             border: none;
-            padding: 10px 20px;
             cursor: pointer;
             color: var(--eufy-gray);
             font-weight: 500;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -1px;
+            transition: color 0.3s;
         }
 
         .tab-btn.active {
             color: var(--eufy-green);
-            border-bottom-color: var(--eufy-green);
+            border-bottom: 2px solid var(--eufy-green);
+        }
+
+        .tab-content {
+            position: relative;
         }
 
         .tab-pane {
@@ -286,6 +269,10 @@
 
         .tab-pane.active {
             display: block;
+        }
+
+        .recommendation {
+            line-height: 1.6;
         }
 
         .loading {
@@ -298,18 +285,18 @@
             background-color: rgba(255,255,255,0.8);
             z-index: 2000;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
         }
 
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--eufy-green);
-            border-radius: 50%;
+        .spinner {
             width: 50px;
             height: 50px;
-            animation: spin 2s linear infinite;
+            border: 5px solid var(--eufy-light-gray);
+            border-top: 5px solid var(--eufy-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
             margin-bottom: 20px;
         }
 
@@ -318,45 +305,21 @@
             100% { transform: rotate(360deg); }
         }
 
-        .error-message {
-            display: none;
-            background-color: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 4px;
-            text-align: center;
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1001;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 80%;
+        .loading-text {
+            color: var(--eufy-dark);
+            font-weight: 500;
         }
 
-        @media (max-width: 768px) {
-            .form-container, .result-container {
-                padding: 20px;
-            }
-
-            .container {
-                margin-top: 80px;
-            }
-
-            .page-title h1 {
-                font-size: 28px;
-            }
-
-            .page-title p {
-                font-size: 16px;
-            }
+        .error-message {
+            display: none;
+            background-color: #FFF0F0;
+            color: #D32F2F;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
         }
 
         /* 增强表格样式 */
-        .markdown-content {
-            line-height: 1.6;
-        }
-        
         .markdown-content table {
             width: 100%;
             border-collapse: collapse;
@@ -400,13 +363,14 @@
             font-size: 22px;
         }
         
-        .markdown-content h3 {
-            color: var(--eufy-dark);
-            margin-top: 20px;
-        }
-        
-        .markdown-content ul {
-            margin-left: 20px;
+        /* 方案图片样式 */
+        .markdown-content img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         /* 打印友好样式 */
@@ -419,7 +383,7 @@
                 page-break-before: always;
             }
             
-            .header, .form-container, .btn, .lang-switch {
+            .header, .form-container, .loading, .error-message {
                 display: none !important;
             }
             
@@ -427,13 +391,24 @@
                 margin-top: 0;
             }
             
-            body {
-                background-color: white;
-            }
-            
             .result-container {
                 box-shadow: none;
                 padding: 0;
+            }
+        }
+
+        /* 响应式样式 */
+        @media (max-width: 768px) {
+            .form-container, .result-container {
+                padding: 20px;
+            }
+            
+            .page-title h1 {
+                font-size: 28px;
+            }
+            
+            .btn {
+                width: 100%;
             }
         }
     </style>
@@ -441,14 +416,12 @@
 <body>
     <div class="header">
         <div class="header-content">
-            <!-- 使用CSS艺术字代替logo图片 -->
             <div class="logo-text">
                 <span class="eufy-e">e</span><span class="eufy-text">ufy</span>
                 <span class="logo-subtitle">Master</span>
             </div>
-            
             <div class="lang-switch">
-                <button class="lang-btn active" onclick="changeLanguage('en')">English</button>
+                <button class="lang-btn" onclick="changeLanguage('en')">EN</button>
                 <button class="lang-btn" onclick="changeLanguage('zh')">中文</button>
             </div>
         </div>
@@ -456,36 +429,35 @@
     
     <div class="container">
         <div class="page-title">
-            <h1 data-lang-en="Smart Security & Lighting Solution Generator" data-lang-zh="智能安防和照明解决方案生成器">Smart Security & Lighting Solution Generator</h1>
-            <p data-lang-en="Generate personalized security and lighting solutions based on your home layout and requirements" data-lang-zh="根据您的家居布局和需求生成个性化的安防和照明解决方案">Generate personalized security and lighting solutions based on your home layout and requirements</p>
+            <h1 data-lang-en="Smart Security & Lighting Solution" data-lang-zh="智能安防与照明解决方案">Smart Security & Lighting Solution</h1>
+            <p data-lang-en="Get a customized eufy security and lighting solution for your home based on your specific needs and floor plan." data-lang-zh="根据您的具体需求和户型，获取定制化的eufy智能安防与照明解决方案。">Get a customized eufy security and lighting solution for your home based on your specific needs and floor plan.</p>
         </div>
         
         <div class="form-container">
+            <div class="error-message" id="error-message"></div>
+            
             <div class="form-group">
                 <label for="location" data-lang-en="Location" data-lang-zh="地理位置">Location</label>
-                <input type="text" id="location" class="form-control" data-lang-placeholder-en="e.g. Shanghai, China or Northern Europe" data-lang-placeholder-zh="例如：上海, 中国 或 北欧" placeholder="e.g. Shanghai, China or Northern Europe">
+                <input type="text" id="location" class="form-control" data-lang-placeholder-en="e.g., Beijing, China" data-lang-placeholder-zh="例如：北京，中国" placeholder="e.g., Beijing, China">
             </div>
             
             <div class="form-group">
-                <label for="floor-plan" data-lang-en="Floor Plan / Home Layout" data-lang-zh="户型/家居布局">Floor Plan / Home Layout</label>
-                <textarea id="floor-plan" class="form-control" data-lang-placeholder-en="Describe your home layout, e.g. 2-bedroom apartment with a living room, kitchen and two bathrooms, approx 90 sqm" data-lang-placeholder-zh="描述您的户型，例如：两室一厅一厨两卫，约90平米" placeholder="Describe your home layout, e.g. 2-bedroom apartment with a living room, kitchen and two bathrooms, approx 90 sqm"></textarea>
+                <label for="floor-plan" data-lang-en="Floor Plan Description" data-lang-zh="户型描述">Floor Plan Description</label>
+                <textarea id="floor-plan" class="form-control" data-lang-placeholder-en="e.g., 3 bedroom apartment, 120 square meters, with a balcony and open kitchen" data-lang-placeholder-zh="例如：三室两厅，120平米，带阳台和开放式厨房" placeholder="e.g., 3 bedroom apartment, 120 square meters, with a balcony and open kitchen"></textarea>
             </div>
             
             <div class="form-group">
-                <label for="requirements" data-lang-en="Security & Lighting Requirements" data-lang-zh="安防和照明需求">Security & Lighting Requirements</label>
-                <textarea id="requirements" class="form-control" data-lang-placeholder-en="Describe your requirements, e.g. need to monitor front door and windows, indoor monitoring for pets, smart lighting in the living room and bedroom" data-lang-placeholder-zh="描述您的需求，例如：需要监控前门和窗户，室内宠物监控，客厅和卧室需要智能照明" placeholder="Describe your requirements, e.g. need to monitor front door and windows, indoor monitoring for pets, smart lighting in the living room and bedroom"></textarea>
+                <label for="requirements" data-lang-en="Security & Lighting Requirements" data-lang-zh="安防与照明需求">Security & Lighting Requirements</label>
+                <textarea id="requirements" class="form-control" data-lang-placeholder-en="e.g., Need security cameras for front door and balcony, smart lighting for living room and bedrooms" data-lang-placeholder-zh="例如：需要前门和阳台的安防摄像头，客厅和卧室的智能照明" placeholder="e.g., Need security cameras for front door and balcony, smart lighting for living room and bedrooms"></textarea>
             </div>
             
             <div class="form-group">
-                <label data-lang-en="Upload Floor Plan Images (Optional)" data-lang-zh="上传户型图片（可选）">Upload Floor Plan Images (Optional)</label>
+                <label data-lang-en="Upload Floor Plan (Optional)" data-lang-zh="上传户型图（可选）">Upload Floor Plan (Optional)</label>
                 <div class="file-upload" id="file-upload-area">
-                    <div class="upload-btn-wrapper">
-                        <div class="upload-btn">
-                            <i>+</i>
-                            <span data-lang-en="Upload Image" data-lang-zh="上传图片">Upload Image</span>
-                        </div>
+                    <label class="upload-btn">
                         <input type="file" accept="image/*" onchange="uploadImage(this)">
-                    </div>
+                        <span class="upload-icon">+</span>
+                    </label>
                 </div>
             </div>
             
@@ -496,13 +468,13 @@
             <h2 data-lang-en="Smart Home Solution" data-lang-zh="智能家居解决方案">Smart Home Solution</h2>
             
             <div class="region-info" id="region-info-section">
-                <h3 data-lang-en="Regional Feature Analysis" data-lang-zh="地区特征分析">Regional Feature Analysis</h3>
+                <h3 data-lang-en="Regional Analysis" data-lang-zh="地区特征分析">Regional Analysis</h3>
                 <div id="region-info"></div>
             </div>
             
             <div class="tabs">
                 <div class="tab-header">
-                    <button class="tab-btn active" onclick="switchTab('recommendation')" data-lang-en="Recommendation" data-lang-zh="推荐方案">Recommendation</button>
+                    <button class="tab-btn active" onclick="switchTab('recommendation')" data-lang-en="Solution Details" data-lang-zh="方案详情">Solution Details</button>
                 </div>
                 
                 <div class="tab-content">
@@ -515,28 +487,23 @@
     </div>
     
     <div id="loading" class="loading" style="display: none;">
-        <div class="loading-spinner"></div>
-        <p data-lang-en="Generating solution..." data-lang-zh="正在生成解决方案...">Generating solution...</p>
+        <div class="spinner"></div>
+        <div class="loading-text" data-lang-en="Generating your customized solution..." data-lang-zh="正在生成您的定制化方案...">Generating your customized solution...</div>
     </div>
-    
-    <div id="error-message" class="error-message"></div>
     
     <!-- 添加 Markdown 转换库 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <script>
+        // 全局变量
         let currentLanguage = 'en';
-        let uploadedImages = [];
-        
-        // 文件上传配置
-        const allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        const maxFileSize = 5 * 1024 * 1024; // 5MB
+        const uploadedImages = [];
         
         // 切换语言
         function changeLanguage(lang) {
             currentLanguage = lang;
             
-            // 更新按钮状态
+            // 更新语言按钮状态
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
